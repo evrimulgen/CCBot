@@ -297,6 +297,8 @@ namespace CCBotDesktop
             var testOrderBook = await _bittrexApi.GetOrderbook("BTC-LTC", OrderbookType.Both);
             var testMarketHistories = await _bittrexApi.GetMarketHistory("BTC-LTC");
             var testMarketSummaries = await _bittrexApi.GetMarketSummaries();
+            var testMarketSummary = await _bittrexApi.GetMarketSummary("BTC-LTC");
+
 
             //FillAllTickers
             //var tickerList = new List<Ticker>();
@@ -309,7 +311,7 @@ namespace CCBotDesktop
 
             if (testListMarkets.IsNullOrEmpty() || testListCurrencies.Result.IsNullOrEmpty() || !testTicker.Success ||
                 testOrderBook.BuyOrders.IsNullOrEmpty() || testOrderBook.SellOrders.IsNullOrEmpty() || testMarketHistories.Result.IsNullOrEmpty()
-                || testMarketSummaries.Result.IsNullOrEmpty())
+                || testMarketSummaries.Result.IsNullOrEmpty() || !(testMarketSummary.Result.First().Last > 0))
             {
                 _logger.LogCritical($"A list was empty, check every list !");
             }

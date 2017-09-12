@@ -46,4 +46,14 @@ namespace Core.Data
         [JsonProperty("Created")]
         public DateTime Created { get; set; }
     }
+
+    public class MarketSummarySingle
+    {
+        [JsonProperty("success")]
+        public bool Success { get; set; }
+        [JsonProperty("message")]
+        public string Message { get; set; }
+        [JsonProperty("result")]
+        public IEnumerable<MarketSummary> Result { get; set; }
+    }
 }
