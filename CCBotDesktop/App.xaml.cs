@@ -2,8 +2,10 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using CCBotDesktop.Presenters;
+using Core.APIs;
 using Core.BusinessLogic;
 using Core.Data;
 using Core.Repositories;
@@ -20,6 +22,7 @@ namespace CCBotDesktop
     /// </summary>
     public partial class App
     {
+        private int _debug = 1;
         protected override void OnStartup(StartupEventArgs e)
         {
             var serviceCollection = new ServiceCollection();
@@ -32,7 +35,7 @@ namespace CCBotDesktop
             presenter.Initialize();
 
             var startupWindow = new MainWindow(serviceProvider.GetService<ILogger<MainWindow>>(),
-                    serviceProvider.GetService<IMainPresenter>());
+                    serviceProvider.GetService<IMainPresenter>(), serviceProvider.GetService<IBittrexApi>());
 
             startupWindow.Show();
         }
@@ -50,11 +53,12 @@ namespace CCBotDesktop
             serviceCollection.AddSingleton<IBittrexService, BittrexService>();
             serviceCollection.AddSingleton<IMainPresenter, MainPresenter>();
             serviceCollection.AddSingleton<IBittrexApiRepository, BittrexApiRepository>();
-            serviceCollection.AddSingleton<IMarkets, Markets>();
+            serviceCollection.AddSingleton<IMarkets, MarketsResult>();
             serviceCollection.AddSingleton<ICurrencies, Currencies>();
             serviceCollection.AddTransient<IMarketOrders, MarketOrders>();
             serviceCollection.AddSingleton<IMarketsHistoryRepository, MarketsHistoryRepository>();
             serviceCollection.AddSingleton<IObservableRepository, ObservableRepository>();
+            serviceCollection.AddSingleton<IBittrexApi, BittrexApi>();
             serviceCollection.AddLogging();
         }
     }

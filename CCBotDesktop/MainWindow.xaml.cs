@@ -9,9 +9,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using CCBotDesktop.Presenters;
+using Core.APIs;
 using Core.BusinessLogic;
 using Core.Data;
 using Core.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace CCBotDesktop
@@ -22,13 +24,15 @@ namespace CCBotDesktop
     public partial class MainWindow : Window
     {
         private readonly ILogger<MainWindow> _logger;
+        private readonly IBittrexApi _bittrexApi;
         protected IMainPresenter Presenter { get; set; }
         protected DispatcherTimer SecondTimer { get; }
 
-        public MainWindow(ILogger<MainWindow> logger, IMainPresenter presenter)
+        public MainWindow(ILogger<MainWindow> logger, IMainPresenter presenter, IBittrexApi bittrexApi)
         {
             InitializeComponent();
             _logger = logger;
+            _bittrexApi = bittrexApi;
             Presenter = presenter;
             SecondTimer = new DispatcherTimer();
         }
@@ -46,9 +50,9 @@ namespace CCBotDesktop
             var ticker = await Presenter.GetBittrexRepository().GetTickerAsync(selected);
 
             MarketNameTB.Text = ticker.MarketLiteral;
-            BidTB.Text = ticker.result.Bid.ToString(CultureInfo.CurrentCulture);
-            AskTB.Text = ticker.result.Ask.ToString(CultureInfo.CurrentCulture);
-            LastTB.Text = ticker.result.Last.ToString(CultureInfo.CurrentCulture);
+            BidTB.Text = ticker.Result.Bid.ToString(CultureInfo.CurrentCulture);
+            AskTB.Text = ticker.Result.Ask.ToString(CultureInfo.CurrentCulture);
+            LastTB.Text = ticker.Result.Last.ToString(CultureInfo.CurrentCulture);
             SetPercentageChangedValues();
         }
 
@@ -62,6 +66,8 @@ namespace CCBotDesktop
                 {
                     MainList.Items.Add(market.ToString());
                 }
+
+                FindPercentBTN.IsEnabled = true;
             }
 
             _logger.LogInformation($"Finished setup of MainWindow");
@@ -70,7 +76,7 @@ namespace CCBotDesktop
             MainListSelectBox.Items.Add("Order Alpha Desc");
             //InitializeTimer();
 
-            PercentageChangeTB.Text = "5";
+            PercentageChangeMethodTB.Text = "5";
             MinutesBox.Text = "60";
         }
 
@@ -207,23 +213,16 @@ namespace CCBotDesktop
                     var priceChange = await Presenter.GetMainLogic()
                         .GetCalculatedPriceChange(currentlySelectedMarket, minutes);
 
-                    if (priceChange.PercentageChanged * 100 > percentageChanged || priceChange.PercentageChanged * 100 < -percentageChanged)
+                    if (priceChange.PercentageChanged * 100 > percentageChanged ||
+                        priceChange.PercentageChanged * 100 < -percentageChanged)
                     {
-                        _logger.LogInformation($"Pricetrend: {priceChange.PriceUpDown}, Pricechange: {priceChange.HumanReadableString}");
+                        _logger.LogInformation(
+                            $"Pricetrend: {priceChange.PriceUpDown}, Pricechange: {priceChange.HumanReadableString}");
                         result.Add(priceChange);
                         ErrorBox.Text = $"FOUND: {priceChange.MarketLiteral} - {priceChange.PriceUpDown}";
                     }
 
                     DebugBox.Text = $"Comparing: {priceChange}";
-                }
-
-                var list = result.OrderBy(x => x.PercentageChanged).ToList();
-                PriceChangeListBox.Items.Clear();
-                PriceChangeListBox.ItemsSource = null;
-
-                foreach (var item in list)
-                {
-                    PriceChangeListBox.Items.Add(item);
                 }
             }
             catch (Exception ex)
@@ -233,6 +232,15 @@ namespace CCBotDesktop
             }
             finally
             {
+                var list = result.OrderBy(x => x.PercentageChanged).ToList();
+                PriceChangeListBox.Items.Clear();
+                PriceChangeListBox.ItemsSource = null;
+
+                foreach (var item in list)
+                {
+                    PriceChangeListBox.Items.Add(item);
+                }
+
                 _logger.LogInformation($"Finished fetcing changes!");
                 ErrorBox.Text = $"Finished fetching percentages :)";
                 DebugBox.Text = $"Done";
@@ -277,5 +285,35 @@ namespace CCBotDesktop
 
             Process.Start($"microsoft-edge:{uriString}");
         }
+
+        private async void button1_Click(object sender, RoutedEventArgs e)
+        {
+            var sw = new Stopwatch();
+            sw.Start();
+
+            var testListMarkets = await _bittrexApi.GetMarkets();
+            var testListCurrencies = await _bittrexApi.GetCurrencies();
+            var testTicker = await _bittrexApi.GetTicker("BTC-LTC");
+            var testOrderBook = await _bittrexApi.GetOrderbook("BTC-LTC", OrderbookType.Both);
+            var testMarketHistories = await _bittrexApi.GetMarketHistory("BTC-LTC");
+
+            //FillAllTickers
+            //var tickerList = new List<Ticker>();
+            //foreach (var literal in testListMarkets)
+            //{
+            //    tickerList.Add(await _bittrexApi.GetTicker($"{literal.BaseCurrency}-{literal.MarketCurrency}"));
+            //}
+
+            
+
+            if (testListMarkets.IsNullOrEmpty() || testListCurrencies.Result.IsNullOrEmpty() || !testTicker.Success ||
+                testOrderBook.BuyOrders.IsNullOrEmpty() || testOrderBook.SellOrders.IsNullOrEmpty() || testMarketHistories.Result.IsNullOrEmpty())
+            {
+                _logger.LogCritical($"A list was empty, check every list !");
+            }
+
+            sw.Stop();
+            _logger.LogCritical($"Elapsed seconds: {(double) sw.ElapsedMilliseconds / 1000}");
+        }
     }
-}
+} 

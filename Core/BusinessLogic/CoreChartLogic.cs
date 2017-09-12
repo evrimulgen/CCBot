@@ -14,8 +14,7 @@ namespace Core.BusinessLogic
         Down = 0,
         Up = 1
     }
-
-
+    
     public class PriceChange
     {
         public readonly double PercentageChanged;
@@ -60,7 +59,7 @@ namespace Core.BusinessLogic
             var currentTicker = await _repository.GetTickerAsync(marketLiteral);
             var marketOrders = await _repository.GetMarketHistory(marketLiteral);
 
-            var currentPrice = currentTicker.result.Last;
+            var currentPrice = currentTicker.Result.Last;
             var historicOrder =
                 marketOrders.result.FirstOrDefault(x => x.TimeStamp == GetClosestDateTimeToMinutes(marketOrders.result.Select(t => t.TimeStamp), minutes));
             var historicPrice = historicOrder?.Price;

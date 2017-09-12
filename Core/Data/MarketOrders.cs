@@ -8,37 +8,50 @@ using Newtonsoft.Json;
 
 namespace Core.Data
 {
-    public interface IMarketOrders : IApiResult<HistoricOrder>
+    public interface IMarketOrders : IApiResult<MarketHistoryEntry>
     {
 
     }
 
+    [Obsolete ("Remove after implementing new API service")]
     public class MarketOrders : IMarketOrders
     {
         private readonly ILogger<MarketOrders> _logger;
         public bool success { get; set; }
         public string message { get; set; }
-        public IEnumerable<HistoricOrder> result { get; set; }
+        public IEnumerable<MarketHistoryEntry> result { get; set; }
 
         public MarketOrders(ILogger<MarketOrders> logger)
         {
             _logger = logger;
-            result = new List<HistoricOrder>();
+            result = new List<MarketHistoryEntry>();
         }
 
-        public IEnumerable<HistoricOrder> GetApiResult()
+        public IEnumerable<MarketHistoryEntry> GetApiResult()
         {
             return result;
         }
 
-        public void SetResult(IEnumerable<HistoricOrder> list)
+        public void SetResult(IEnumerable<MarketHistoryEntry> list)
         {
             result = list;
             _logger.LogInformation($"{nameof(MarketOrders)}: ApiResult set. Count: {result.Count()} ");
         }
     }
 
-    public class HistoricOrder
+
+    public class MarketHistory
+    {
+        public string MarketLiteral { get; set; }
+        [JsonProperty("success")]
+        public bool Success { get; set; }
+        [JsonProperty("message")]
+        public string Message { get; set; }
+        [JsonProperty("result")]
+        public IEnumerable<MarketHistoryEntry> Result { get; set; }
+    }
+
+    public class MarketHistoryEntry
     {
         [JsonProperty("Id")]
         public int Id { get; set; }

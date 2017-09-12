@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Core.Extensions;
 using Microsoft.Extensions.Logging;
-
-// ReSharper disable InconsistentNaming
+using Newtonsoft.Json;
 
 namespace Core.Data
 {
@@ -13,32 +12,36 @@ namespace Core.Data
         IEnumerable<MarketPairTuple> GetMarketPairs();
     }
 
-    public class Markets : IMarkets
+    public class MarketsResult : IMarkets
     {
-        private readonly ILogger<Markets> _logger;
-        public bool success { get; set; }
-        public string message { get; set; }
-        public IEnumerable<Market> result { get; set; }
-        public IList<MarketPairTuple> marketPairs { get; set; }
+        [JsonProperty("success")]
+        public bool Success { get; set; }
+        [JsonProperty("message")]
+        public string Message { get; set; }
+        [JsonProperty("result")]
+        public IEnumerable<Market> Result { get; set; }
 
-        public Markets(ILogger<Markets> logger)
+        public IList<MarketPairTuple> MarketPairs { get; set; }
+        private readonly ILogger<MarketsResult> _logger;
+
+        public MarketsResult(ILogger<MarketsResult> logger)
         {
             _logger = logger;
-            marketPairs = new List<MarketPairTuple>();
+            MarketPairs = new List<MarketPairTuple>();
         }
 
         public void CreateMarketPairs()
         {
-            marketPairs?.Clear();
+            MarketPairs?.Clear();
 
-            if (result.IsNullOrEmpty())
+            if (Result.IsNullOrEmpty())
             {
                 _logger.LogError($"Markets resultlist was empty or null. Be sure to fill the resultset before accessing it");
             }
 
-            foreach (var market in result)
+            foreach (var market in Result)
             {
-                marketPairs?.Add(new MarketPairTuple()
+                MarketPairs?.Add(new MarketPairTuple()
                 {
                     BaseCurrency = market.BaseCurrency,
                     MarketCurrency = market.MarketCurrency
@@ -48,24 +51,24 @@ namespace Core.Data
 
         public IEnumerable<MarketPairTuple> GetMarketPairs()
         {
-            if (marketPairs.IsNullOrEmpty())
+            if (MarketPairs.IsNullOrEmpty())
             {
                 throw new ArgumentOutOfRangeException($"MarketPairs is null or empty, make sure to fill it befire calling this method!");
             }
 
-            return marketPairs;
+            return MarketPairs;
         }
 
         public void SetResult(IEnumerable<Market> list)
         {
-            result = list;
+            Result = list;
             CreateMarketPairs();
-            _logger.LogInformation($"{nameof(Markets)}: ApiResult set. Count: {result.Count()} ");
+            _logger.LogInformation($"{nameof(Result)}: ApiResult set. Count: {Result.Count()} ");
         }
 
         public IEnumerable<Market> GetApiResult()
         {
-            return result;
+            return Result;
         }
     }
 

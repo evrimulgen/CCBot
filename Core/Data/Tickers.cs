@@ -17,12 +17,13 @@ namespace Core.Data
         void AddTicker(Ticker ticker);
     }
 
+    [Obsolete ("Remove after implementing new API")]
     public class Tickers : ITickers
     {
         private readonly ILogger<Tickers> _logger;
 
-        public bool success { get; set; }
-        public string message { get; set; }
+        public bool Success { get; set; }
+        public string Message { get; set; }
         public Dictionary<string, Ticker> tickers { get; set; }
         public Tickers(ILogger<Tickers> logger)
         {
@@ -69,11 +70,13 @@ namespace Core.Data
 
     public class Ticker
     {
-        public string MarketLiteral { get; set; }
+        [JsonProperty("message")]
+        public string Message { get; set; }
         [JsonProperty("success")]
-        public bool success { get; set; }
+        public bool Success { get; set; }
         [JsonProperty("result")]
-        public BidAskLastTriple result { get; set; }
+        public BidAskLastTriple Result { get; set; }
+        public string MarketLiteral { get; set; }  
     }
 
     public class BidAskLastTriple

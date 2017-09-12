@@ -8,15 +8,15 @@ namespace Core.Data
     public interface IMarketsHistoryRepository
     {
         bool AddOrdersToMarket(string marketName, MarketOrders orderBook);
-        IList<HistoricOrder> GetAllOrdersForMarket(string marketName);
-        IDictionary<string, IList<HistoricOrder>> GetHistoricMarketOrders();
+        IList<MarketHistoryEntry> GetAllOrdersForMarket(string marketName);
+        IDictionary<string, IList<MarketHistoryEntry>> GetHistoricMarketOrders();
     }
 
     public class MarketsHistoryRepository : IMarketsHistoryRepository
     {
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ILogger<MarketsHistoryRepository> _logger;
-        public IDictionary<string, IList<HistoricOrder>> HistoricMarketOrders { get; set; }
+        public IDictionary<string, IList<MarketHistoryEntry>> HistoricMarketOrders { get; set; }
         public MarketsHistoryRepository(ILogger<MarketsHistoryRepository> logger)
         {
             _logger = logger;
@@ -39,12 +39,12 @@ namespace Core.Data
             return false;
         }
 
-        public IList<HistoricOrder> GetAllOrdersForMarket(string marketName)
+        public IList<MarketHistoryEntry> GetAllOrdersForMarket(string marketName)
         {
             return HistoricMarketOrders[marketName];
         }
 
-        public IDictionary<string, IList<HistoricOrder>> GetHistoricMarketOrders()
+        public IDictionary<string, IList<MarketHistoryEntry>> GetHistoricMarketOrders()
         {
             return HistoricMarketOrders;
         }

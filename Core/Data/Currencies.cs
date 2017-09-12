@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
-
-// ReSharper disable InconsistentNaming
+using Newtonsoft.Json;
 
 namespace Core.Data
 {
@@ -13,25 +12,21 @@ namespace Core.Data
 
     public class Currencies : ICurrencies
     {
-        private readonly ILogger<Currencies> _logger;
-        public bool success {get; set; }
-        public string message { get; set; }
-        public IEnumerable<SingleCurrency> result { get; set; }
-
-        public Currencies(ILogger<Currencies> logger )
-        {
-            _logger = logger;
-        }
+        [JsonProperty("success")]
+        public bool Success {get; set; }
+        [JsonProperty("message")]
+        public string Message { get; set; }
+        [JsonProperty("result")]
+        public IEnumerable<SingleCurrency> Result { get; set; }
 
         public IEnumerable<SingleCurrency> GetApiResult()
         {
-            return result;
+            return Result;
         }
 
         public void SetResult(IEnumerable<SingleCurrency> list)
         {
-            result = list;
-            _logger.LogInformation($"{nameof(Currencies)}: ApiResult set. Count: {result.Count()} ");
+            Result = list;
         }
     }
     public class SingleCurrency

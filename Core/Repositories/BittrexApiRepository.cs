@@ -93,9 +93,9 @@ namespace Core.Repositories
             try
             {
                 var json = await GetMarketsJson();
-                var markets = JsonConvert.DeserializeObject<Markets>(json);
+                var markets = JsonConvert.DeserializeObject<MarketsResult>(json);
 
-                if (markets.success)
+                if (markets.Success)
                 {
                     _markets.SetResult(markets.GetApiResult());
                     _logger.LogInformation($"Successfully initialized markets");
@@ -141,7 +141,7 @@ namespace Core.Repositories
                 var json = await GetCurrenciesJson();
                 var currencies = JsonConvert.DeserializeObject<Currencies>(json);
 
-                if (currencies.success)
+                if (currencies.Success)
                 {
                     _currencies.SetResult(currencies.GetApiResult());
                     _logger.LogInformation($"Successfully initialized currencies");
@@ -236,7 +236,7 @@ namespace Core.Repositories
                 var json = await GetTickerJson(marketLiteral);
                 var ticker = JsonConvert.DeserializeObject<Ticker>(json);
 
-                if (ticker.success)
+                if (ticker.Success)
                 {
                     ticker.MarketLiteral = marketLiteral;
                     _tickers.AddTicker(ticker);
