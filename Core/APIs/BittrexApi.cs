@@ -25,6 +25,7 @@ namespace Core.APIs
         Task<Ticker> GetTicker(string marketLiteral);
         Task<Orders> GetOrderbook(string marketLiteral, OrderbookType type);
         Task<MarketHistory> GetMarketHistory(string marketLiteral);
+        Task<MarketSummaries> GetMarketSummaries();
     }
 
     public class BittrexApi : IBittrexApi
@@ -186,6 +187,33 @@ namespace Core.APIs
             {
                 _logger.LogError($"GetMarketHistory threw an exception!: {ex.Message}");
                 _logger.LogDebug($"GetMarketHistory threw an exception!: {ex.StackTrace}");
+            }
+
+            return null;
+        }
+
+        public async Task<MarketSummaries> GetMarketSummaries()
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var json = await client.GetStringAsync(new Uri($"https://bittrex.com/api/v1.1/public/getmarketsummaries"));
+                    var marketSummary = JsonConvert.DeserializeObject<MarketSummaries>(json);
+
+                    if (marketSummary.Success)
+                    {
+                        _logger.LogInformation($"Successfully fetched MarketSummaries from Bittrex");
+                        return marketSummary;
+                    }
+
+                    _logger.LogError($"GetMarketSummaries API call returned false on success!");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"GetMarketSummaries threw an exception!: {ex.Message}");
+                _logger.LogDebug($"GetMarketSummaries threw an exception!: {ex.StackTrace}");
             }
 
             return null;

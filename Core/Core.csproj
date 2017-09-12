@@ -150,6 +150,7 @@
     <Compile Include="Data\MarketOrders.cs" />
     <Compile Include="Data\MarketsResult.cs" />
     <Compile Include="Data\MarketsHistoryRepository.cs" />
+    <Compile Include="Data\MarketSummaries.cs" />
     <Compile Include="Data\Orders.cs" />
     <Compile Include="Data\Tickers.cs" />
     <Compile Include="Extensions\CustomExtensions.cs" />
