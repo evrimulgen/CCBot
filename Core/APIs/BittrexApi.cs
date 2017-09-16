@@ -4,6 +4,8 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Core.Data;
+using Core.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -30,11 +32,13 @@ namespace Core.APIs
     public class BittrexApi : IBittrexApi
     {
         private readonly ILogger<BittrexApi> _logger;
+        private readonly IServiceProvider _provider;
         private readonly HttpClient _reusableHttpClient;
 
-        public BittrexApi(ILogger<BittrexApi> logger)
+        public BittrexApi(ILogger<BittrexApi> logger, IServiceProvider provider)
         {
             _logger = logger;
+            _provider = provider;
             _reusableHttpClient = new HttpClient();
             _reusableHttpClient.DefaultRequestHeaders.Accept.Clear();
             _reusableHttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -42,16 +46,27 @@ namespace Core.APIs
 
         public async Task<IEnumerable<Market>> GetMarkets()
         {
+            var marketsSingleton = _provider.GetService<IMarkets>() as MarketsResult;
+
+            if (marketsSingleton != null && !marketsSingleton.Result.IsNullOrEmpty())
+            {
+                return marketsSingleton.Result;
+            }
+
             try
             {
                 using (var client = new HttpClient())
                 {
                     var json = await client.GetStringAsync(new Uri($"https://bittrex.com/api/v1.1/public/getmarkets"));
                     var markets = JsonConvert.DeserializeObject<MarketsResult>(json);
+                    
 
-                    if (markets.Success)
+                    if (markets.Success && marketsSingleton != null)
                     {
                         _logger.LogInformation($"Successfully fetched Markets from Bittrex");
+
+                        marketsSingleton.Result =  markets.Result;
+                        marketsSingleton.CreateMarketPairs();                      
                         return markets.Result;
                     }
 

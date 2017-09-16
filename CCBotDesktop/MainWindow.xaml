@@ -20,6 +20,12 @@
                 </MenuItem>
             </Menu>
         </DockPanel>
-
+        <ListBox x:Name="MarketsList" HorizontalAlignment="Left" Height="443" Margin="10,35,0,0" VerticalAlignment="Top" Width="164"/>
+        <StackPanel Margin="0,0,0,10.6" HorizontalAlignment="Left" Width="164" Height="77" VerticalAlignment="Bottom">
+            <RadioButton Margin="10,10,60,10" Content="All Markets" Foreground="Black" FontWeight="Heavy" Checked="RadioButton_Checked" Height="19"/>
+            <RadioButton Margin="10,10,60,10" Content="Favorites" Foreground="Black" FontWeight="Heavy" Checked="RadioButton_Checked_1" Height="20"/>
+            <Image x:Name="image" HorizontalAlignment="Left" Height="195" Margin="294.4,0,0,0" Width="432"/>
+        </StackPanel>
+        <Grid x:Name="MainDataGrid" HorizontalAlignment="Left" Height="443" Margin="179,35,0,0" VerticalAlignment="Top" Width="804" Grid.ColumnSpan="2"/>
     </Grid>
 </Window>

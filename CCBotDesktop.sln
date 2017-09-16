@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CCBotDesktop", "CCBotDeskto
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{C48FBF6C-99DE-49EB-BFCD-51F6EEBE93F3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{933BB0CC-7738-4523-A868-FA7A9B393ECF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{C48FBF6C-99DE-49EB-BFCD-51F6EEBE93F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C48FBF6C-99DE-49EB-BFCD-51F6EEBE93F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C48FBF6C-99DE-49EB-BFCD-51F6EEBE93F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{933BB0CC-7738-4523-A868-FA7A9B393ECF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{933BB0CC-7738-4523-A868-FA7A9B393ECF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{933BB0CC-7738-4523-A868-FA7A9B393ECF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{933BB0CC-7738-4523-A868-FA7A9B393ECF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

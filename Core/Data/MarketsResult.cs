@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Core.Extensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -9,6 +10,8 @@ namespace Core.Data
     public interface IMarkets
     {
         IEnumerable<MarketPairTuple> GetMarketPairs();
+        Market GetMarketFromBtrxLiteral(string literal);
+        void CreateMarketPairs();
     }
 
     public class MarketsResult : IMarkets
@@ -52,10 +55,20 @@ namespace Core.Data
         {
             if (MarketPairs.IsNullOrEmpty())
             {
-                throw new ArgumentOutOfRangeException($"MarketPairs is null or empty, make sure to fill it befire calling this method!");
+                _logger.LogError($"MarketPairs is null or empty, make sure to fill it befire calling this method!");
             }
 
             return MarketPairs;
+        }
+
+        public Market GetMarketFromBtrxLiteral(string literal)
+        {
+            if (!Result.IsNullOrEmpty())
+            {
+                return Result.FirstOrDefault(mk => mk.MarketName.Equals(literal));
+            }
+
+            return null;
         }
     }
 

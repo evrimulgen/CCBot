@@ -3,7 +3,7 @@ using CCBotDesktop.Presenters;
 using Core.APIs;
 using Core.Data;
 using Core.DataBase;
-using Core.DataProcessor;
+using Core.OhlcAnalysis;
 using Core.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -27,12 +27,8 @@ namespace CCBotDesktop
             serviceProvider.GetService<ILoggerFactory>().AddSerilog();
 
             var startupWindow = new MainWindow(
-                    serviceProvider.GetService<ILogger<MainWindow>>(),
-                    serviceProvider.GetService<IMainPresenter>(), 
-                    serviceProvider.GetService<ICandleStickProcessor>(), 
-                    serviceProvider.GetService<IBittrexApi>(),
-                    serviceProvider.GetService<ICryptoWatchApi>(),
-                    serviceProvider.GetService<ISqlLiteRepository>());
+                serviceProvider.GetService<ILogger<MainWindow>>(),
+                serviceProvider.GetService<IMainPresenter>());
 
             startupWindow.Show();
         }
@@ -51,7 +47,7 @@ namespace CCBotDesktop
             serviceCollection.AddSingleton<ICurrencies, Currencies>();
             serviceCollection.AddSingleton<IBittrexApi, BittrexApi>();
             serviceCollection.AddTransient<ISqlLiteRepository, SqlLiteRepository>();
-            serviceCollection.AddTransient<ICandleStickProcessor, CandleStickProcessor>();
+            serviceCollection.AddTransient<IOhlcProcessor, OhlcProcessor>();
 
             serviceCollection.AddLogging();
         }
