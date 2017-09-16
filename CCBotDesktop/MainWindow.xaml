@@ -5,39 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CCBotDesktop"
         mc:Ignorable="d"
-        Title="CCTradeBot - PreAlpha (dev)" Height="680.4" Width="825">
+        Title="CCTradeBot - PreAlpha (dev)" Height="600" Width="1000">
     <Grid Margin="0,0,0.4,-0.2">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="130*"/>
             <ColumnDefinition Width="43*"/>
         </Grid.ColumnDefinitions>
-        <ListBox x:Name="MainList" HorizontalAlignment="Left" Margin="10,10,0,36.8" Width="128" SelectionChanged="listBox_SelectionChanged"/>
-        <ComboBox x:Name="MainListSelectBox" Margin="10,0,0,9.8" HorizontalAlignment="Left" Width="128" SelectionChanged="MainListSelectBox_SelectionChanged" Height="22" VerticalAlignment="Bottom"/>
-        <Button x:Name="StartButton" Content="Run" Margin="0,0,10.4,8" Click="StartButton_OnClick" Grid.Column="1" Height="24" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75"/>
-        <Button x:Name="button" Content="FillTickers" Margin="0,0,90.4,8" Click="Debug_Click" Height="24" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75" Grid.Column="1" IsEnabled="False"/>
-        <ListBox x:Name="PriceChangeListBox" Margin="0,10,11.4,0" HorizontalAlignment="Right" Width="234" Height="104" VerticalAlignment="Top" SelectionChanged="PriceChangeBox_SelectionChanged" Grid.ColumnSpan="2"/>
-        <TextBox x:Name="MarketNameTB" HorizontalAlignment="Left" Height="23" Margin="224,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Label x:Name="label" Content="Market:" HorizontalAlignment="Left" Margin="143,10,0,0" VerticalAlignment="Top" Width="76"/>
-        <Label x:Name="label_Copy" Content="Bid:" HorizontalAlignment="Left" Margin="143,36,0,0" VerticalAlignment="Top" Width="76"/>
-        <Label x:Name="label_Copy1" Content="Market:" HorizontalAlignment="Left" Margin="143,10,0,0" VerticalAlignment="Top" Width="76"/>
-        <TextBox x:Name="AskTB" HorizontalAlignment="Left" Height="23" Margin="224,62,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Label x:Name="label_Copy2" Content="Ask:" HorizontalAlignment="Left" Margin="143,62,0,0" VerticalAlignment="Top" Width="76"/>
-        <TextBox x:Name="BidTB" HorizontalAlignment="Left" Height="23" Margin="224,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Label x:Name="label_Copy3" Content="Last:" HorizontalAlignment="Left" Margin="143,88,0,0" VerticalAlignment="Top" Width="76"/>
-        <TextBox x:Name="LastTB" HorizontalAlignment="Left" Height="23" Margin="224,88,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Button x:Name="FindPercentBTN" Content="Find%" Margin="0,0,170.4,8" Grid.ColumnSpan="2" Height="24" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75" Click="GetPriceChangesOverTenPercent" IsEnabled="False"/>
-        <Label x:Name="PercentageChangeLBL" Content="Percentage:" HorizontalAlignment="Left" Margin="143,558,0,0" VerticalAlignment="Top" Width="108"/>
-        <Label x:Name="PriceChangeLBL" Content="Price change:" HorizontalAlignment="Left" Margin="143,532,0,0" VerticalAlignment="Top" Width="108"/>
-        <TextBox x:Name="PriceChangeTB" HorizontalAlignment="Left" Height="23" Margin="224,535,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="PercentageChangeTB" HorizontalAlignment="Left" Height="23" Margin="224,560,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="MinutesBox" HorizontalAlignment="Left" Height="23" Margin="224,509,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="ErrorBox" Text="" Margin="143,0,0,36.6" TextWrapping="Wrap" Background="{x:Null}" FontWeight="Bold" Foreground="Red" IsEnabled="False" Height="22" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="201"/>
-        <Label x:Name="MinutesLBL" Content="Minutes:" HorizontalAlignment="Left" Margin="143,506,0,0" VerticalAlignment="Top" Width="76"/>
-        <TextBox x:Name="PercentageChangeMethodTB" HorizontalAlignment="Left" Height="23" Margin="224,481,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Label x:Name="PercentForMethod" Content="% - T.hold:" HorizontalAlignment="Left" Margin="143,480,0,0" VerticalAlignment="Top" Width="76"/>
-        <Button x:Name="CheckCoinigy" Content="Check" Margin="0,119,11.4,0" Grid.ColumnSpan="2" Click="CheckCoinigy_Click" HorizontalAlignment="Right" Width="234" Height="19" VerticalAlignment="Top"/>
-        <TextBox x:Name="DebugBox" Text="" Margin="143,0,0,10.6" TextWrapping="Wrap" Background="{x:Null}" FontWeight="Bold" Foreground="Green" IsEnabled="False" HorizontalAlignment="Left" Width="201" Height="22" VerticalAlignment="Bottom"/>
-        <Button x:Name="button1" Content="DEBUG" Grid.Column="1" Margin="0,0,11.6,36.6" Click="button1_Click" HorizontalAlignment="Right" Width="74" Height="19" VerticalAlignment="Bottom"/>
+        <Button x:Name="DebugButton" Content="DEBUG" Grid.Column="1" Margin="121.8,0,9.8,10.6" Click="DebugButton_Click" HorizontalAlignment="Stretch" Height="30" VerticalAlignment="Bottom"/>
+        <DockPanel HorizontalAlignment="Stretch" Height="30" LastChildFill="False" VerticalAlignment="Top" Grid.ColumnSpan="2"
+                   Grid.Column="0" Margin="0,0">
+            <Menu x:Name="Menu" HorizontalAlignment="Stretch" DockPanel.Dock="Top" Height="30" VerticalAlignment="Top" Margin="0,0,-0.2,0">
+                <MenuItem Header="_File">
+                    <MenuItem Header="_Exit" />
+                </MenuItem>
+            </Menu>
+        </DockPanel>
 
     </Grid>
 </Window>

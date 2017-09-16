@@ -73,11 +73,18 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Console, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Console.4.3.0\lib\net46\System.Console.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.Entity.Design" />
+    <Reference Include="System.Data.SQLite, Version=1.0.105.2, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\System.Data.SQLite\2015\bin\System.Data.SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.3.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
       <Private>True</Private>
@@ -144,25 +151,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="APIs\BittrexApi.cs" />
-    <Compile Include="BusinessLogic\CoreChartLogic.cs" />
+    <Compile Include="APIs\CryptoWatchApi.cs" />
+    <Compile Include="DataBase\SqlLiteRepository.cs" />
+    <Compile Include="DataProcessor\CandleStickProcessor.cs" />
+    <Compile Include="Data\CandleData.cs" />
     <Compile Include="Data\Currencies.cs" />
-    <Compile Include="Data\IApiResult.cs" />
     <Compile Include="Data\MarketOrders.cs" />
     <Compile Include="Data\MarketsResult.cs" />
-    <Compile Include="Data\MarketsHistoryRepository.cs" />
     <Compile Include="Data\MarketSummaries.cs" />
     <Compile Include="Data\Orders.cs" />
     <Compile Include="Data\Tickers.cs" />
     <Compile Include="Extensions\CustomExtensions.cs" />
-    <Compile Include="Repositories\BittrexApiRepository.cs" />
-    <Compile Include="Repositories\IApiRepository.cs" />
-    <Compile Include="Repositories\ObservableRepository.cs" />
+    <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Services\BittrexApiService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Repositories\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

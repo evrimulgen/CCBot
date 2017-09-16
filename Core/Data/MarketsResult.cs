@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Core.Extensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace Core.Data
 {
-    public interface IMarkets : IApiResult<Market>
+    public interface IMarkets
     {
         IEnumerable<MarketPairTuple> GetMarketPairs();
     }
@@ -58,18 +57,6 @@ namespace Core.Data
 
             return MarketPairs;
         }
-
-        public void SetResult(IEnumerable<Market> list)
-        {
-            Result = list;
-            CreateMarketPairs();
-            _logger.LogInformation($"{nameof(Result)}: ApiResult set. Count: {Result.Count()} ");
-        }
-
-        public IEnumerable<Market> GetApiResult()
-        {
-            return Result;
-        }
     }
 
     public class MarketPairTuple
@@ -105,29 +92,3 @@ namespace Core.Data
         }
     }
 }
-
-
-//{
-//	"success" : true,
-//	"message" : "",
-//	"result" : [{
-//			"MarketCurrency" : "LTC",
-//			"BaseCurrency" : "BTC",
-//			"MarketCurrencyLong" : "Litecoin",
-//			"BaseCurrencyLong" : "Bitcoin",
-//			"MinTradeSize" : 0.01000000,
-//			"MarketName" : "BTC-LTC",
-//			"IsActive" : true,
-//			"Created" : "2014-02-13T00:00:00"
-//		}, {
-//			"MarketCurrency" : "DOGE",
-//			"BaseCurrency" : "BTC",
-//			"MarketCurrencyLong" : "Dogecoin",
-//			"BaseCurrencyLong" : "Bitcoin",
-//			"MinTradeSize" : 100.00000000,
-//			"MarketName" : "BTC-DOGE",
-//			"IsActive" : true,
-//			"Created" : "2014-02-13T00:00:00"
-//		}
-//    ]
-//}

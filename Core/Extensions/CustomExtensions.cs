@@ -6,7 +6,7 @@ namespace Core.Extensions
 {
     public static class CustomExtensions
     {
-        public static void PrintList<T> (this IList<T> list)
+        public static void PrintList<T>(this IList<T> list)
         {
             if (!list.Any())
             {
@@ -19,7 +19,7 @@ namespace Core.Extensions
             }
         }
 
-        public static bool IsNullOrEmpty<T> (this IEnumerable<T> collection)
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T> collection)
         {
             if (collection == null)
             {
@@ -27,6 +27,19 @@ namespace Core.Extensions
             }
 
             return !collection.Any();
+        }
+
+        public static string ConvertBittrexToCryptoWatchLiteral(this string value)
+        {
+            try
+            {
+                var newLiteral = value.Split('-');
+                return $"{newLiteral[1]}{newLiteral[0]}".ToLower();
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException($"Something went wrong when converting from Bittrex to Cryptowatch literal. Bittrex literal was: {value}. Stacktrace is: {ex.StackTrace}");
+            }
         }
     }
 }

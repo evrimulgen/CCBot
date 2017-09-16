@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace Core.Data
 {
-    public interface ICurrencies : IApiResult<SingleCurrency>
+    public interface ICurrencies
     {
         
     }
@@ -40,26 +38,3 @@ namespace Core.Data
         public string BaseAddress { get; set; }
     }
 }
-
-//{
-//	"success" : true,
-//	"message" : "",
-//	"result" : [{
-//			"CurrencyDto" : "BTC",
-//			"CurrencyLong" : "Bitcoin",
-//			"MinConfirmation" : 2,
-//			"TxFee" : 0.00020000,
-//			"IsActive" : true,
-//			"CoinType" : "BITCOIN",
-//			"BaseAddress" : null
-//		}, {
-//			"CurrencyDto" : "LTC",
-//			"CurrencyLong" : "Litecoin",
-//			"MinConfirmation" : 5,
-//			"TxFee" : 0.00200000,
-//			"IsActive" : true,
-//			"CoinType" : "BITCOIN",
-//			"BaseAddress" : null
-//		}
-//    ]
-//}
