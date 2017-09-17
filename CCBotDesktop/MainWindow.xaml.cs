@@ -182,6 +182,14 @@ namespace CCBotDesktop
                 var upperBBand = sma20 + (2 * bandValue);
                 var lowerBBand = sma20 - (2 * bandValue);
 
+                var currentPosition = candleData
+                    .ResultSet
+                    .Values
+                    .First()
+                    .OrderByDescending(x => x.ClosePrice)
+                    .First()
+                    .ClosePrice;
+
                 var stop = "stop";
 
 
