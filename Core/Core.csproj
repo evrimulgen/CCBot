@@ -171,11 +171,15 @@
     <Compile Include="APIs\BittrexApi.cs" />
     <Compile Include="APIs\CryptoWatchApi.cs" />
     <Compile Include="DataBase\SqlLiteRepository.cs" />
+    <Compile Include="Data\Allowance.cs" />
     <Compile Include="Data\CandleData.cs" />
+    <Compile Include="Data\CryptoWatchMarket.cs" />
+    <Compile Include="Data\CryptoWatchMarketPairData.cs" />
     <Compile Include="Data\Currencies.cs" />
     <Compile Include="Data\MarketOrders.cs" />
     <Compile Include="Data\MarketsResult.cs" />
     <Compile Include="Data\MarketSummaries.cs" />
+    <Compile Include="Data\MarketTriple.cs" />
     <Compile Include="Data\Orders.cs" />
     <Compile Include="Data\Tickers.cs" />
     <Compile Include="Extensions\CustomExtensions.cs" />

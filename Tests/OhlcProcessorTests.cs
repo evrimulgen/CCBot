@@ -9,11 +9,9 @@ namespace Tests
     [TestClass]
     public class OhlcProcessorTests
     {
-        private IOhlcProcessor _processor;
         public OhlcProcessorTests()
         {
             Setup();
-            
         }
 
         private void Setup()
@@ -29,10 +27,6 @@ namespace Tests
         [TestMethod]
         public void TestSimpleMovingAverage()
         {
-            var candleData = GetCandleData();
-            var result = _processor.GetMovingAverage(candleData.ResultSet[60], 5);
-
-            Assert.AreEqual(result, 2);
         }
 
         public CandleData GetCandleData()

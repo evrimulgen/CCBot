@@ -26,7 +26,7 @@ namespace Core.Extensions
             return Math.Floor(unixTimeStamp - seconds);
         }
 
-        public static double ConvertDateTimeAndSubstractSeconds(this DateTime dateTime, int seconds)
+        public static double ConvertDateTimeToUnixAndSubstractSeconds(this DateTime dateTime, int seconds)
         {
             return dateTime.DateTimeToUnixTimeStamp().SubstractsecondsFromUnixTimeStamp(seconds);
         }

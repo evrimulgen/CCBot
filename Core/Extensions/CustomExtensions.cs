@@ -33,12 +33,26 @@ namespace Core.Extensions
         {
             try
             {
-                var newLiteral = value.Split('-');
+                var newLiteral = value.Split('-').Select(lit => lit.Replace("USDT", "USD")).ToArray();
                 return $"{newLiteral[1]}{newLiteral[0]}".ToLower();
             }
             catch (Exception ex)
             {
-                throw new ArgumentException($"Something went wrong when converting from Bittrex to Cryptowatch literal. Bittrex literal was: {value}. Stacktrace is: {ex.StackTrace}");
+                throw new ArgumentException($"Something went wrong when converting from Bittrex to Cryptowatch literal. Bittrex literal was: {value}, . Stacktrace is: {ex.StackTrace}");
+            }
+        }
+
+        public static string ConvertCryptoToBtrxLiteral(this string value)
+        {
+            try
+            {
+                var part1 = value.Substring(0, 3);
+                var part2 = value.Substring(3, value.Length - 3);
+                return string.Join("-", part2, part1).ToUpper();
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException($"Something went wrong when converting from Cryptowatch to Bittrex literal. Cryptowatch literal was: {value}. Stacktrace is: {ex.StackTrace}");
             }
         }
     }

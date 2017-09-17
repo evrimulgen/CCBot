@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Core.Data;
 using Core.Extensions;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Core.APIs
@@ -19,6 +20,8 @@ namespace Core.APIs
     public interface ICryptoWatchApi
     {
         Task<CandleData> GetCandleData(string bittrexLiteral, OlhcBeforeAfterParam param, double unixTimeStamp, IEnumerable<int> timeIntervalsInSeconds);
+        Task<CryptoWatchMarketPairData> GetPairs();
+        Task<CryptoWatchMarketsData> GetMarkets();
     }
 
     public class CryptoWatchApi : ICryptoWatchApi
@@ -31,18 +34,18 @@ namespace Core.APIs
             _logger = logger;
         }
 
-        public async Task<CandleData> GetCandleData(string bittrexLiteral, OlhcBeforeAfterParam param, double unixTimeStamp, IEnumerable<int> timeIntervalsInSeconds)
+        public async Task<CandleData> GetCandleData(string btrxLiteral, OlhcBeforeAfterParam param, double unixTimeStamp, IEnumerable<int> timeIntervalsInSeconds)
         {
             try
             {
                 using (var client = new HttpClient())
                 {
-                    var transformedLiteral = bittrexLiteral.ConvertBittrexToCryptoWatchLiteral();
+                    var literal = btrxLiteral.ConvertBittrexToCryptoWatchLiteral();
                     var intervalsInSeconds = timeIntervalsInSeconds as int[] ?? timeIntervalsInSeconds.ToArray();
                     var intervalParam = string.Join(",", intervalsInSeconds.Select(x => x.ToString()).ToArray());
 
                     var uri =
-                        $"https://api.cryptowat.ch/markets/{ExchangeString}/{transformedLiteral}/ohlc?{param}={unixTimeStamp}&periods={intervalParam}".ToLower();
+                        $"https://api.cryptowat.ch/markets/{ExchangeString}/{literal}/ohlc?{param}={unixTimeStamp}&periods={intervalParam}".ToLower();
 
                     var json = await client.GetStringAsync(new Uri(uri));
                     var candleResult = JObject.Parse(json);
@@ -65,13 +68,68 @@ namespace Core.APIs
                         candleData.ResultSet.Add(interval, result);
                     }
 
-                    _logger.LogInformation($"Finished fetching candledata for {bittrexLiteral} - Success: {candleData.ResultSet.First().Value.Count > 0}");
+                    _logger.LogInformation($"Finished fetching candledata for {literal} - Success: {candleData.ResultSet.First().Value.Count > 0}");
+                    return candleData;
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError($"GetCandleData threw an exception!: {ex.Message}");
                 _logger.LogDebug($"GetCandleData threw an exception!: {ex.StackTrace}");
+            }
+
+            return null;
+        }
+
+        public async Task<CryptoWatchMarketPairData> GetPairs()
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var uri =
+                        $"https://api.cryptowat.ch/pairs";
+
+                    var json = await client.GetStringAsync(new Uri(uri));
+                    var marketPairs = JsonConvert.DeserializeObject<CryptoWatchMarketPairData>(json);
+
+                    if (!marketPairs.ResultSet.IsNullOrEmpty())
+                    {
+                        return marketPairs;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"GetPairs threw an exception!: {ex.Message}");
+                _logger.LogDebug($"GetPairs threw an exception!: {ex.StackTrace}");
+            }
+
+            return null;
+        }
+
+        public async Task<CryptoWatchMarketsData> GetMarkets()
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var uri =
+                        $"https://api.cryptowat.ch/markets";
+
+                    var json = await client.GetStringAsync(new Uri(uri));
+                    var marketsData = JsonConvert.DeserializeObject<CryptoWatchMarketsData>(json);
+
+                    if (!marketsData.Result.IsNullOrEmpty())
+                    {
+                        return marketsData;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"GetMarkets threw an exception!: {ex.Message}");
+                _logger.LogDebug($"GetMarkets threw an exception!: {ex.StackTrace}");
             }
 
             return null;

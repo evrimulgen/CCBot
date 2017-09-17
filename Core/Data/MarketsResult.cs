@@ -12,6 +12,7 @@ namespace Core.Data
         IEnumerable<MarketPairTuple> GetMarketPairs();
         Market GetMarketFromBtrxLiteral(string literal);
         void CreateMarketPairs();
+        IEnumerable<Market> Result();
     }
 
     public class MarketsResult : IMarkets
@@ -49,6 +50,17 @@ namespace Core.Data
                     MarketCurrency = market.MarketCurrency
                 });
             }
+        }
+
+        IEnumerable<Market> IMarkets.Result()
+        {
+            if (Result.IsNullOrEmpty())
+            {
+                _logger.LogError($"Result is null or empty, make sure to fill it befire calling this method!");
+                throw new ArgumentNullException($"Result is null or empty, make sure to fill it befire calling this method!");
+            }
+            
+            return Result;
         }
 
         public IEnumerable<MarketPairTuple> GetMarketPairs()
