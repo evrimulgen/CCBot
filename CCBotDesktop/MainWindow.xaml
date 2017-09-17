@@ -27,18 +27,21 @@
             <RadioButton Margin="10,3,60,3" Content="Bott - able" Foreground="Black" FontWeight="Heavy" Checked="RadioButton_Checked_2" Height="20"/>
         </StackPanel>
         <Grid x:Name="MainDataGrid" HorizontalAlignment="Left" Height="443" Margin="179,35,0,0" VerticalAlignment="Top" Width="804" Grid.ColumnSpan="2">
-            <Label Content="MinutesAgo (start time)" Height="28" HorizontalAlignment="Left" Name="BaseLabel" VerticalAlignment="Top" Foreground="Black" FontWeight="Bold" Width="162" Margin="10,10,0,0"/>
-            <TextBox x:Name="MinutesBox" HorizontalAlignment="Left" Height="23" Margin="10,38,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="86"/>
-            <Label Content="CandleInterval (minutes)" Height="28" HorizontalAlignment="Left" x:Name="CandleIntervalLabel" VerticalAlignment="Top" Foreground="Black" FontWeight="Bold" Width="162" Margin="10,66,0,0"/>
+            <Label Content="Startime seconds ago" Height="28" HorizontalAlignment="Left" Name="BaseLabel" VerticalAlignment="Top" Foreground="Black" FontWeight="Bold" Width="162" Margin="10,10,0,0"/>
+            <TextBox x:Name="SecondsBox" HorizontalAlignment="Left" Height="23" Margin="10,38,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="86"/>
+            <Label Content="1 candle = seconds" Height="28" HorizontalAlignment="Left" x:Name="CandleIntervalLabel" VerticalAlignment="Top" Foreground="Black" FontWeight="Bold" Width="162" Margin="10,66,0,0"/>
             <TextBox x:Name="IntervalBox" HorizontalAlignment="Left" Height="23" Margin="10,94,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="86"/>
             <Label Content="SMA" Height="28" HorizontalAlignment="Left" x:Name="PeriodsLabel" VerticalAlignment="Top" Foreground="Black" FontWeight="Bold" Width="86" Margin="10,392,0,0"/>
             <TextBox x:Name="PeriodsBox" HorizontalAlignment="Left" Height="23" Margin="10,150,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="86"/>
             <TextBox x:Name="SimpleMovingAverageBox" HorizontalAlignment="Left" Height="23" Margin="10,420,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="86"/>
-            <Label Content="Periods (amount of candles)" Height="28" HorizontalAlignment="Left" x:Name="SimpleMovingAverageLabel" VerticalAlignment="Top" Foreground="Black" FontWeight="Bold" Width="162" Margin="10,122,0,0"/>
+            <Label Content="Cryptowatch Api Periods" Height="28" HorizontalAlignment="Left" x:Name="SimpleMovingAverageLabel" VerticalAlignment="Top" Foreground="Black" FontWeight="Bold" Width="200" Margin="10,122,0,0"/>
             <Label x:Name="UserMsgLabel" Content="" Height="23" VerticalAlignment="Top" Margin="579,420,0,0" Foreground="Coral" FontWeight="Bold"/>
+            <TextBox x:Name="SimpleMovingAverageBox_Copy" HorizontalAlignment="Left" Height="23" Margin="101,420,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="86"/>
+            <Label Content="BBand" Height="28" HorizontalAlignment="Left" x:Name="BBLabel" VerticalAlignment="Top" Foreground="Black" FontWeight="Bold" Width="86" Margin="101,392,0,0"/>
         </Grid>
         <DockPanel HorizontalAlignment="Left" Height="77" LastChildFill="False" Margin="179,483,0,0" VerticalAlignment="Top" Width="557"/>
         <Button x:Name="SMAButton" Content="Calc SMA" Grid.Column="1" Margin="0,0,130.6,9.6" Click="SMAButton_Click" HorizontalAlignment="Right" Width="107" Height="31" VerticalAlignment="Bottom"/>
         <Button x:Name="WriteMarketsToDatabaseBTN" Content="Markets to Database" Grid.Column="1" Margin="0,0,9.6,45.6" HorizontalAlignment="Right" Width="116" Height="32" VerticalAlignment="Bottom" Click="WriteMarketsToDatabase_Click"/>
+        <Button x:Name="button" Content="Calc. BBand" Grid.Column="1" Margin="0,0,130.6,45.6" Click="BollingerBandBTN_CLick" Height="32" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="107"/>
     </Grid>
 </Window>

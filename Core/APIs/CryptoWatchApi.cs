@@ -19,7 +19,7 @@ namespace Core.APIs
 
     public interface ICryptoWatchApi
     {
-        Task<CandleData> GetCandleData(string bittrexLiteral, OlhcBeforeAfterParam param, double unixTimeStamp, IEnumerable<int> timeIntervalsInSeconds);
+        Task<CandleData> GetCandleData(MarketTriple triple, OlhcBeforeAfterParam param, double unixTimeStamp, IEnumerable<int> timeIntervalsInSeconds);
         Task<CryptoWatchMarketPairData> GetPairs();
         Task<CryptoWatchMarketsData> GetMarkets();
     }
@@ -27,25 +27,24 @@ namespace Core.APIs
     public class CryptoWatchApi : ICryptoWatchApi
     {
         private readonly ILogger<CryptoWatchApi> _logger;
-        private static readonly string ExchangeString = $"Kraken";
 
         public CryptoWatchApi(ILogger<CryptoWatchApi> logger)
         {
             _logger = logger;
         }
 
-        public async Task<CandleData> GetCandleData(string btrxLiteral, OlhcBeforeAfterParam param, double unixTimeStamp, IEnumerable<int> timeIntervalsInSeconds)
+        public async Task<CandleData> GetCandleData(MarketTriple triple, OlhcBeforeAfterParam param, double unixTimeStamp, IEnumerable<int> timeIntervalsInSeconds)
         {
             try
             {
                 using (var client = new HttpClient())
                 {
-                    var literal = btrxLiteral.ConvertBittrexToCryptoWatchLiteral();
+                    var literal = triple.CryptoWatchLiteral;
                     var intervalsInSeconds = timeIntervalsInSeconds as int[] ?? timeIntervalsInSeconds.ToArray();
                     var intervalParam = string.Join(",", intervalsInSeconds.Select(x => x.ToString()).ToArray());
 
                     var uri =
-                        $"https://api.cryptowat.ch/markets/{ExchangeString}/{literal}/ohlc?{param}={unixTimeStamp}&periods={intervalParam}".ToLower();
+                        $"https://api.cryptowat.ch/markets/{triple.ExchangeName}/{literal}/ohlc?{param}={unixTimeStamp}&periods={intervalParam}".ToLower();
 
                     var json = await client.GetStringAsync(new Uri(uri));
                     var candleResult = JObject.Parse(json);

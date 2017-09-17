@@ -36,12 +36,12 @@ namespace CCBotDesktop
 
         private void Setup()
         {
-            ObservableMarketsList = new ObservableCollection<Market>();     
+            ObservableMarketsList = new ObservableCollection<Market>();
         }
 
         private async void DebugButton_Click(object sender, RoutedEventArgs e)
         {
-            
+
         }
 
         private async void RadioButton_Checked(object sender, RoutedEventArgs e)
@@ -65,11 +65,14 @@ namespace CCBotDesktop
             try
             {
                 var marketLiteral = MarketsList.SelectedValue.ToString();
-                var secondsAgoStart = int.Parse(MinutesBox.Text) * 60;
-                var interValInSeconds = int.Parse(IntervalBox.Text) * 60;
+                var secondsAgoStart = int.Parse(SecondsBox.Text);
+                var interValInSeconds = int.Parse(IntervalBox.Text);
                 var periods = int.Parse(PeriodsBox.Text);
 
-                var sma = await Presenter.GetSimpleMovingAverageForMarket(marketLiteral,
+                var marketTriple = Presenter.Repository().GetMarketTriple(marketLiteral);
+
+                var sma = await Presenter.GetSimpleMovingAverageForMarket(
+                    marketTriple,
                     secondsAgoStart,
                     interValInSeconds,
                     periods);
@@ -82,7 +85,6 @@ namespace CCBotDesktop
                 _logger.LogDebug($"SMAButton throw error: {ex.StackTrace}");
                 SetUserMessage(ex.Message);
             }
-            
         }
 
         private async void WriteMarketsToDatabase_Click(object sender, RoutedEventArgs e)
@@ -117,7 +119,7 @@ namespace CCBotDesktop
                 _logger.LogDebug($"WriteMarketsToDatabase_Click throw error: {ex.StackTrace}");
                 SetUserMessage(ex.Message);
             }
-            
+
             SetUserMessage($"Wrote {counter} markets to Database");
         }
 
@@ -133,5 +135,63 @@ namespace CCBotDesktop
             bottableMarkets.ToList().ForEach(x => ObservableMarketsList.Add(x));
             MarketsList.ItemsSource = ObservableMarketsList;
         }
+
+        private async void BollingerBandBTN_CLick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var marketLiteral = MarketsList.SelectedValue.ToString();
+                var secondsAgoStart = int.Parse(SecondsBox.Text);
+                var periods = int.Parse(PeriodsBox.Text);
+
+                var marketTriple = Presenter.Repository().GetMarketTriple(marketLiteral);
+
+                var unixTimeStart = DateTime.Now.ConvertDateTimeToUnixAndSubstractSeconds(secondsAgoStart);
+
+                var candleData = await Presenter.CryptoWatchApi().GetCandleData(
+                    marketTriple,
+                    OlhcBeforeAfterParam.After,
+                    unixTimeStart,
+                    new List<int>() { periods });
+
+                var sma20 = Presenter
+                    .Processor()
+                    .GetMovingAverage(candleData.ResultSet.Values.First(), periods);
+
+                var last20CloseTimes =
+                    candleData.ResultSet.Values.First().OrderByDescending(x => (double)x.ClosePrice).Take(20).ToList();
+
+                var values = last20CloseTimes
+                    .Select(x => x.ClosePrice - (decimal)sma20);
+
+                var squared = new List<double>();
+
+                foreach (var number in values)
+                {
+                    if (number > 0)
+                    {
+                        squared.Add(Math.Sqrt((double) number));
+                    }
+                    else
+                    {
+                        squared.Add(Math.Sqrt((double) number * -1));
+                    }
+                }
+
+                var bandValue = Math.Sqrt(squared.Sum() / periods);
+                var upperBBand = sma20 + (2 * bandValue);
+                var lowerBBand = sma20 - (2 * bandValue);
+
+                var stop = "stop";
+
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"SMAButton throw error: {ex.Message}");
+                _logger.LogDebug($"SMAButton throw error: {ex.StackTrace}");
+                SetUserMessage(ex.Message);
+            }
+        }
     }
-} 
+}

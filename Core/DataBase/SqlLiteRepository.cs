@@ -19,6 +19,7 @@ namespace Core.DataBase
         bool UpsertFavouriteBtrxLiteral(string marketLiteral);
         bool DeleteFavoriteBtrxLiteral(string marketLiteral);
         bool LoadAllMarketsIntoDb(IEnumerable<MarketTriple> triples);
+        MarketTriple GetMarketTriple(string btrxLiteral);
     }
 
     public class SqlLiteRepository : ISqlLiteRepository
@@ -161,6 +162,38 @@ namespace Core.DataBase
             {
                 _logger.LogError($"Failed at LoadAllMarketsIntoDb, Message: {ex.Message}");
                 _logger.LogDebug($"Failed at LoadAllMarketsIntoDb, Stacktrace: {ex.StackTrace}");
+                throw;
+            }
+        }
+
+        public MarketTriple GetMarketTriple(string btrxLiteral)
+        {
+            try
+            {
+                using (var conn = new SQLiteConnection(ConnectionString))
+                {
+                    conn.Open();
+
+                    var command = conn.CreateCommand();
+                    command.CommandText = $"SELECT * FROM MARKETLITERALS WHERE BtrxApiLiteral = '{btrxLiteral}'";
+                    var dataReader = command.ExecuteReader();
+                    var columnIndex = dataReader.GetOrdinal("Exchange");
+                    MarketTriple triple = null;
+
+                    while (dataReader.Read())
+                    {
+                        triple = new MarketTriple(dataReader.GetString(1), dataReader.GetString(2),
+                            dataReader.GetString(3));
+                    }
+                    
+                    dataReader.Close();
+                    return triple;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed at GetFavouriteBtrxLiterals, Message: {ex.Message}");
+                _logger.LogDebug($"Failed at GetFavouriteBtrxLiterals, Stacktrace: {ex.StackTrace}");
                 throw;
             }
         }

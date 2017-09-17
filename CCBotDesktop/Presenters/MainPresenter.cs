@@ -16,9 +16,11 @@ namespace CCBotDesktop.Presenters
         Task<IEnumerable<Market>> GetMarketResult();
         IEnumerable<MarketPairTuple> GetMarketPairs();
         IEnumerable<Market> GetFavoriteMarkets();
-        Task<double> GetSimpleMovingAverageForMarket(string btrxLiteral, int startSecondsAgo, int candleTimeInterval, int periods);
+        Task<double> GetSimpleMovingAverageForMarket(MarketTriple triple, int startSecondsAgo, int candleTimeInterval, int periods);
         Task<CryptoWatchMarketPairData> GetCryptoWatchPairs();
         ISqlLiteRepository Repository();
+        ICryptoWatchApi CryptoWatchApi();
+        IOhlcProcessor Processor();
         IEnumerable<Market> GetBottableMarkets();
         Task<IEnumerable<CryptoWatchMarket>> GetCryptoWatchMarkets();
     }
@@ -64,6 +66,16 @@ namespace CCBotDesktop.Presenters
             return marketLiterals.Select(lit => _markets.GetMarketFromBtrxLiteral(lit)).ToList();
         }
 
+        public ICryptoWatchApi CryptoWatchApi()
+        {
+            return _cryptoWatchApi;
+        }
+
+        public IOhlcProcessor Processor()
+        {
+            return _processor;
+        }
+
         public IEnumerable<Market> GetBottableMarkets()
         {
             var bottableMarketLiterals = _repository.GetBottableMarketLiterals();
@@ -83,12 +95,12 @@ namespace CCBotDesktop.Presenters
             return cryptoMarkets.Result;
         }
 
-        public async Task<double> GetSimpleMovingAverageForMarket(string btrxLiteral, int startSecondsAgo, int candleTimeInterval, int periods)
+        public async Task<double> GetSimpleMovingAverageForMarket(MarketTriple triple, int startSecondsAgo, int candleTimeInterval, int periods)
         {
             var unixTimeStart = DateTime.Now.ConvertDateTimeToUnixAndSubstractSeconds(startSecondsAgo);
 
             var candleDataTask = await _cryptoWatchApi.GetCandleData(
-                btrxLiteral,
+                triple,
                 OlhcBeforeAfterParam.After,
                 unixTimeStart,
                 new List<int>() {candleTimeInterval}
