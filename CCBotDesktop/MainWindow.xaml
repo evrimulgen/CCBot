@@ -38,10 +38,12 @@
             <Label x:Name="UserMsgLabel" Content="" Height="23" VerticalAlignment="Top" Margin="579,420,0,0" Foreground="Coral" FontWeight="Bold"/>
             <TextBox x:Name="SimpleMovingAverageBox_Copy" HorizontalAlignment="Left" Height="23" Margin="101,420,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="86"/>
             <Label Content="BBand" Height="28" HorizontalAlignment="Left" x:Name="BBLabel" VerticalAlignment="Top" Foreground="Black" FontWeight="Bold" Width="86" Margin="101,392,0,0"/>
+            <ListBox x:Name="InterestingList" HorizontalAlignment="Left" Height="273" Margin="579,0,0,0" VerticalAlignment="Top" Width="215" SelectionChanged="InterestingList_SelectionChanged"/>
         </Grid>
-        <DockPanel HorizontalAlignment="Left" Height="77" LastChildFill="False" Margin="179,483,0,0" VerticalAlignment="Top" Width="557"/>
+        <DockPanel HorizontalAlignment="Left" Height="77" LastChildFill="False" Margin="179,483,0,0" VerticalAlignment="Top" Width="186"/>
         <Button x:Name="SMAButton" Content="Calc SMA" Grid.Column="1" Margin="0,0,130.6,9.6" Click="SMAButton_Click" HorizontalAlignment="Right" Width="107" Height="31" VerticalAlignment="Bottom"/>
         <Button x:Name="WriteMarketsToDatabaseBTN" Content="Markets to Database" Grid.Column="1" Margin="0,0,9.6,45.6" HorizontalAlignment="Right" Width="116" Height="32" VerticalAlignment="Bottom" Click="WriteMarketsToDatabase_Click"/>
         <Button x:Name="button" Content="Calc. BBand" Grid.Column="1" Margin="0,0,130.6,45.6" Click="BollingerBandBTN_CLick" Height="32" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="107"/>
+        <Button x:Name="GetBBandLimits" Content="AllBBandLimits" Margin="0,0,242.6,9.6" Grid.ColumnSpan="2" Click="GetBBandLimits_Click" Height="31" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="98"/>
     </Grid>
 </Window>

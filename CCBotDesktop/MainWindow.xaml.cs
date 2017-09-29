@@ -25,6 +25,7 @@ namespace CCBotDesktop
         private readonly ILogger<MainWindow> _logger;
         protected IMainPresenter Presenter { get; set; }
         protected ObservableCollection<Market> ObservableMarketsList { get; set; }
+        protected ObservableCollection<Market> ObservableInterestingList { get; set; }
 
         public MainWindow(ILogger<MainWindow> logger, IMainPresenter presenter)
         {
@@ -37,6 +38,7 @@ namespace CCBotDesktop
         private void Setup()
         {
             ObservableMarketsList = new ObservableCollection<Market>();
+            ObservableInterestingList = new ObservableCollection<Market>();
         }
 
         private async void DebugButton_Click(object sender, RoutedEventArgs e)
@@ -146,7 +148,7 @@ namespace CCBotDesktop
 
                 var marketTriple = Presenter.Repository().GetMarketTriple(marketLiteral);
 
-                var unixTimeStart = DateTime.Now.ConvertDateTimeToUnixAndSubstractSeconds(secondsAgoStart);
+                var unixTimeStart = DateTime.Now.AddHours(2).ConvertDateTimeToUnixAndSubstractSeconds(secondsAgoStart);
 
                 var candleData = await Presenter.CryptoWatchApi().GetCandleData(
                     marketTriple,
@@ -154,33 +156,7 @@ namespace CCBotDesktop
                     unixTimeStart,
                     new List<int>() { periods });
 
-                var sma20 = Presenter
-                    .Processor()
-                    .GetMovingAverage(candleData.ResultSet.Values.First(), periods);
-
-                var last20CloseTimes =
-                    candleData.ResultSet.Values.First().OrderByDescending(x => (double)x.ClosePrice).Take(20).ToList();
-
-                var values = last20CloseTimes
-                    .Select(x => x.ClosePrice - (decimal)sma20);
-
-                var squared = new List<double>();
-
-                foreach (var number in values)
-                {
-                    if (number > 0)
-                    {
-                        squared.Add(Math.Sqrt((double) number));
-                    }
-                    else
-                    {
-                        squared.Add(Math.Sqrt((double) number * -1));
-                    }
-                }
-
-                var bandValue = Math.Sqrt(squared.Sum() / periods);
-                var upperBBand = sma20 + (2 * bandValue);
-                var lowerBBand = sma20 - (2 * bandValue);
+                var bollingerBands = Presenter.Processor().GetBollingerBands(candleData.ResultSet.Values.First(), periods);
 
                 var currentPosition = candleData
                     .ResultSet
@@ -190,9 +166,7 @@ namespace CCBotDesktop
                     .First()
                     .ClosePrice;
 
-                var stop = "stop";
-
-
+                var setop = "stop";
             }
             catch (Exception ex)
             {
@@ -200,6 +174,51 @@ namespace CCBotDesktop
                 _logger.LogDebug($"SMAButton throw error: {ex.StackTrace}");
                 SetUserMessage(ex.Message);
             }
+        }
+
+        private async void GetBBandLimits_Click(object sender, RoutedEventArgs e)
+        {
+            ObservableInterestingList.Clear();
+
+            var bottableMarkets = Presenter.GetBottableMarkets().ToList();
+            var secondsAgoStart = int.Parse(SecondsBox.Text);
+            var periods = int.Parse(PeriodsBox.Text);
+            var unixTimeStart = DateTime.Now.AddHours(2).ConvertDateTimeToUnixAndSubstractSeconds(secondsAgoStart);
+            var resultList = new List<Market>();
+
+            foreach (var bottableMarket in bottableMarkets)
+            {
+                var marketTriple = Presenter.Repository().GetMarketTriple(bottableMarket.MarketName);
+
+                var candleData = await Presenter.CryptoWatchApi().GetCandleData(
+                    marketTriple,
+                    OlhcBeforeAfterParam.After,
+                    unixTimeStart,
+                    new List<int>() { periods });
+
+                var bollingerBands = Presenter.Processor().GetBollingerBands(candleData.ResultSet.Values.First(), periods);
+
+                var currentPrice = candleData
+                    .ResultSet
+                    .Values
+                    .First()
+                    .OrderByDescending(x => x.ClosePrice)
+                    .First()
+                    .ClosePrice;
+
+                if ((double) currentPrice > bollingerBands.UpperBand)
+                {
+                    resultList.Add(bottableMarket);
+                }
+            }
+
+            resultList.ForEach(x => ObservableInterestingList.Add(x));
+            InterestingList.ItemsSource = ObservableMarketsList;
+        }
+
+        private void InterestingList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

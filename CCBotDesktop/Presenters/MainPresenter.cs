@@ -79,14 +79,7 @@ namespace CCBotDesktop.Presenters
         public IEnumerable<Market> GetBottableMarkets()
         {
             var bottableMarketLiterals = _repository.GetBottableMarketLiterals();
-            var returnList = new List<Market>();
-
-            foreach (var marketLiteral in bottableMarketLiterals)
-            {
-                returnList.Add(_markets.GetMarketFromBtrxLiteral(marketLiteral));
-            }
-
-            return returnList;
+            return bottableMarketLiterals.Select(marketLiteral => _markets.GetMarketFromBtrxLiteral(marketLiteral)).ToList();
         }
 
         public async Task<IEnumerable<CryptoWatchMarket>> GetCryptoWatchMarkets()
@@ -97,7 +90,7 @@ namespace CCBotDesktop.Presenters
 
         public async Task<double> GetSimpleMovingAverageForMarket(MarketTriple triple, int startSecondsAgo, int candleTimeInterval, int periods)
         {
-            var unixTimeStart = DateTime.Now.ConvertDateTimeToUnixAndSubstractSeconds(startSecondsAgo);
+            var unixTimeStart = DateTime.Now.AddHours(2).ConvertDateTimeToUnixAndSubstractSeconds(startSecondsAgo);
 
             var candleDataTask = await _cryptoWatchApi.GetCandleData(
                 triple,
